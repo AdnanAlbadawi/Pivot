@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- RESET & VARIABLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #ff4655; /* Valorant Red */
+            --glass-bg: rgba(23, 23, 30, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --glow: 0 0 20px rgba(255, 70, 85, 0.5);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Animated Deep Space Background */
+            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #31081f, #0f172a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* --- THE CARD (GLASS EFFECT) --- */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 3rem;
+            border-radius: 24px;
+            border: 1px solid var(--glass-border);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem; /* Slightly larger */
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0px; /* Removed margin to pull subtitle up */
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #fff, #ff4655);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        /* New Subtitle Style */
+        .subtitle {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 2rem;
+            font-weight: 300;
+            opacity: 0.8;
+        }
+
+        /* --- INPUT FIELDS --- */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #ff4655;
+            color: white;
+            padding: 2px 8px;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+
+        input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--glow);
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* --- RESULT SECTION --- */
+        .result-container {
+            margin-top: 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-title {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(255, 70, 85, 0.4);
+            line-height: 1;
+        }
+
+        /* --- COPY BUTTON --- */
+        .copy-btn {
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 8px;
+            width: 35px;
+            height: 35px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            color: white;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary);
+            box-shadow: var(--glow);
+            transform: scale(1.1);
+        }
+
+        .copy-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* --- FOOTER --- */
+        .footer {
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            padding: 10px 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.05);
+            animation: fadeIn 2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Decoration Circle */
+        .circle {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: var(--primary);
+            filter: blur(90px);
+            opacity: 0.15;
+            border-radius: 50%;
+            z-index: -1;
+            top: -50px;
+            left: -50px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="circle"></div>
+
+        <h1>PIVOT</h1>
+        <p class="subtitle">Sens Converter</p>
+
+        <div class="input-group">
+            <label>Current DPI</label>
+            <input type="number" id="old-dpi" placeholder="1600" oninput="calculate()">
+        </div>
+
+        <div class="input-group">
+            <label>Current Sensitivity</label>
+            <input type="number" id="old-sens" placeholder="0.60" step="0.001" oninput="calculate()">
+        </div>
+
+        <div class="input-group">
+            <label>New DPI</label>
+            <input type="number" id="new-dpi" placeholder="800" oninput="calculate()">
+        </div>
+
+        <div class="result-container">
+            <button class="copy-btn" onclick="copyToClipboard()" id="copy-btn" title="Copy Result">
+                <svg viewBox="0 0 24 24" id="icon-copy">
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                </svg>
+                <svg viewBox="0 0 24 24" id="icon-check" style="display:none;">
+                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+            </button>
+
+            <div class="result-title">New Sensitivity</div>
+            <div class="result-value" id="result">---</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Made with 💖 by Adnan
+    </div>
+
+    <script>
+        function calculate() {
+            const oldDpi = parseFloat(document.getElementById('old-dpi').value);
+            const oldSens = parseFloat(document.getElementById('old-sens').value);
+            const newDpi = parseFloat(document.getElementById('new-dpi').value);
+            const display = document.getElementById('result');
+
+            if (oldDpi && oldSens && newDpi) {
+                const eDPI = oldDpi * oldSens;
+                const newSens = eDPI / newDpi;
+                
+                display.innerText = newSens.toFixed(3);
+                
+                // Pulse effect
+                display.style.transform = "scale(1.1)";
+                setTimeout(() => display.style.transform = "scale(1)", 150);
+            } else {
+                display.innerText = "---";
+            }
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('result').innerText;
+            if(text === "---") return;
+
+            // Copy logic
+            navigator.clipboard.writeText(text).then(() => {
+                // Icon Switch Animation
+                const btn = document.getElementById('copy-btn');
+                const copyIcon = document.getElementById('icon-copy');
+                const checkIcon = document.getElementById('icon-check');
+
+                copyIcon.style.display = 'none';
+                checkIcon.style.display = 'block';
+                btn.style.background = '#4caf50'; // Green success color
+                btn.style.boxShadow = '0 0 15px rgba(76, 175, 80, 0.5)';
+
+                // Revert after 2 seconds
+                setTimeout(() => {
+                    copyIcon.style.display = 'block';
+                    checkIcon.style.display = 'none';
+                    btn.style.background = 'rgba(255, 255, 255, 0.1)';
+                    btn.style.boxShadow = 'none';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
